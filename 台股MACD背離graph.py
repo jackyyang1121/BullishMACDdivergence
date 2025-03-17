@@ -11,6 +11,7 @@ from FinMind.data import DataLoader
 from flask_cors import CORS
 from tqdm import tqdm
 import threading
+import gc
 
 warnings.filterwarnings('ignore')
 
@@ -136,7 +137,7 @@ def analyze_stocks_in_background():
                                 (stock_list['industry_category'] != 'ETF') & 
                                 (~stock_list['industry_category'].str.contains('基金|特別股', na=False)) & 
                                 (~stock_list['stock_id'].str.match(r'^01\d{2}T$'))]
-        stock_ids = stock_list['stock_id'].tolist()  # 不限制數量，依本地記憶體
+        stock_ids = stock_list['stock_id'].tolist()
         print(f"從 FinMind 獲取 {len(stock_ids)} 檔股票清單")
     except Exception as e:
         print(f"獲取股票清單失敗：{e}")
@@ -150,30 +151,35 @@ def analyze_stocks_in_background():
     if not os.path.exists(chart_folder):
         os.makedirs(chart_folder)
     
+    batch_size = 500
     progress['total'] = len(stock_ids)
     progress['completed'] = 0
     progress['is_running'] = True
     
-    for stock_id in tqdm(stock_ids, desc="分析股票"):
-        try:
-            stock_data = fetch_historical_data(stock_id, start_date, end_date)
-            if stock_data is None or len(stock_data) < 180:
-                print(f"{stock_id} 數據不足，跳過")
-            else:
-                stock_data = calculate_indicators(stock_data)
-                divergent_data = detect_macd_divergence(stock_data)
-                if not divergent_data.empty:
-                    divergent_stocks.append({
-                        'stockId': stock_id,
-                        'divergentDates': [date.strftime('%Y-%m-%d') for date in divergent_data['日期']]
-                    })
-                    save_path = os.path.join(chart_folder, f'{stock_id}_analysis.png')
-                    plot_stock_chart(stock_data.tail(180), stock_id, divergent_data, save_path)
-        except Exception as e:
-            print(f"處理股票 {stock_id} 時出錯：{e}")
-        progress['completed'] += 1
-        if progress['completed'] > progress['total']:
-            progress['completed'] = progress['total']
+    for i in range(0, len(stock_ids), batch_size):
+        batch_ids = stock_ids[i:i + batch_size]
+        print(f"處理批次 {i // batch_size + 1}，股票數量：{len(batch_ids)}")
+        for stock_id in tqdm(batch_ids, desc="分析股票"):
+            try:
+                stock_data = fetch_historical_data(stock_id, start_date, end_date)
+                if stock_data is None or len(stock_data) < 180:
+                    print(f"{stock_id} 數據不足，跳過")
+                else:
+                    stock_data = calculate_indicators(stock_data)
+                    divergent_data = detect_macd_divergence(stock_data)
+                    if not divergent_data.empty:
+                        divergent_stocks.append({
+                            'stockId': stock_id,
+                            'divergentDates': [date.strftime('%Y-%m-%d') for date in divergent_data['日期']]
+                        })
+                        save_path = os.path.join(chart_folder, f'{stock_id}_analysis.png')
+                        plot_stock_chart(stock_data.tail(180), stock_id, divergent_data, save_path)
+            except Exception as e:
+                print(f"處理股票 {stock_id} 時出錯：{e}")
+            progress['completed'] += 1
+            if progress['completed'] > progress['total']:
+                progress['completed'] = progress['total']
+        gc.collect()  # 清理記憶體
     
     if divergent_stocks:
         try:
@@ -240,5 +246,5 @@ def serve_chart(filename):
     return send_from_directory('stock_charts', filename)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)  # 固定 5000，適用本地或 Codespaces
+    app.run(host='0.0.0.0', port=5000)
 #執行 python 台股MACD背離graph.py
