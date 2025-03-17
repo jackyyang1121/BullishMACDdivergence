@@ -114,7 +114,10 @@ def plot_stock_chart(df, stock_id, divergent_data, save_path):
             savefig=save_path
         )
         plt.close()
-        print(f"已生成 {stock_id} 的圖表：{save_path}")
+        if os.path.exists(save_path):
+            print(f"圖表 {save_path} 已存在")
+        else:
+            print(f"圖表 {save_path} 生成失敗")
     except Exception as e:
         print(f"繪製 {stock_id} 圖表失敗：{e}")
 
@@ -133,7 +136,7 @@ def analyze_stocks_in_background():
                                 (stock_list['industry_category'] != 'ETF') & 
                                 (~stock_list['industry_category'].str.contains('基金|特別股', na=False)) & 
                                 (~stock_list['stock_id'].str.match(r'^01\d{2}T$'))]
-        stock_ids = stock_list['stock_id'].tolist()
+        stock_ids = stock_list['stock_id'].tolist()  # 不限制數量，依本地記憶體
         print(f"從 FinMind 獲取 {len(stock_ids)} 檔股票清單")
     except Exception as e:
         print(f"獲取股票清單失敗：{e}")
@@ -181,10 +184,6 @@ def analyze_stocks_in_background():
     else:
         print("未檢測到背離股票")
     progress['is_running'] = False
-
-@app.route('/')
-def index():
-    return jsonify({"message": "歡迎使用台股 MACD 背離分析 API", "endpoints": ["/stocks", "/progress", "/stock/<stock_id>"]})
 
 @app.route('/stocks')
 def get_divergent_stocks():
@@ -241,6 +240,5 @@ def serve_chart(filename):
     return send_from_directory('stock_charts', filename)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=5000)  # 固定 5000，適用本地或 Codespaces
 #執行 python 台股MACD背離graph.py
