@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, redirect
 import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
@@ -19,6 +19,11 @@ app = Flask(__name__)
 CORS(app)
 
 progress = {'total': 0, 'completed': 0, 'is_running': False}
+
+# 根路徑處理
+@app.route('/')
+def home():
+    return jsonify({'message': 'Welcome to Bullish MACD Divergence API! Use /stocks to get the list of stocks.'})
 
 # 抓取歷史數據
 def fetch_historical_data(stock_id, start_date, end_date):
@@ -79,7 +84,7 @@ def detect_macd_divergence(df, lookback_days=180, recent_days=30):
         print(f"檢測 MACD 背離失敗：{e}")
         return pd.DataFrame()
 
-# 繪製股票圖表（不顯示具體日期）
+# 繪製股票圖表
 def plot_stock_chart(df, stock_id, divergent_data, save_path):
     try:
         df_plot = df.copy()
@@ -102,7 +107,6 @@ def plot_stock_chart(df, stock_id, divergent_data, save_path):
         ]
         
         if not divergent_data.empty:
-            # 只標示背離點，不依賴日期精確對應
             scatter_data = df_plot['Low'].where(df_plot.index.isin(divergent_data['日期']), float('nan'))
             apds.append(mpf.make_addplot(scatter_data, panel=0, type='scatter', markersize=100, marker='^', color='green', label='Bullish Divergence'))
         
