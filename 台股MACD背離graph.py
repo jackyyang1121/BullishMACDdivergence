@@ -151,7 +151,7 @@ def analyze_stocks_in_background():
     if not os.path.exists(chart_folder):
         os.makedirs(chart_folder)
     
-    batch_size = 500
+    batch_size = 200
     progress['total'] = len(stock_ids)
     progress['completed'] = 0
     progress['is_running'] = True
@@ -172,14 +172,12 @@ def analyze_stocks_in_background():
                             'stockId': stock_id,
                             'divergentDates': [date.strftime('%Y-%m-%d') for date in divergent_data['日期']]
                         })
-                        save_path = os.path.join(chart_folder, f'{stock_id}_analysis.png')
-                        plot_stock_chart(stock_data.tail(180), stock_id, divergent_data, save_path)
             except Exception as e:
                 print(f"處理股票 {stock_id} 時出錯：{e}")
             progress['completed'] += 1
             if progress['completed'] > progress['total']:
                 progress['completed'] = progress['total']
-        gc.collect()  # 清理記憶體
+        gc.collect()
     
     if divergent_stocks:
         try:
