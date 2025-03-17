@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, send_from_directory
-import os
 import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
@@ -7,6 +6,7 @@ import pandas_ta as ta
 import warnings
 import mplfinance as mpf
 import matplotlib.pyplot as plt
+import os
 from FinMind.data import DataLoader
 from flask_cors import CORS
 from tqdm import tqdm
@@ -20,6 +20,7 @@ CORS(app)
 
 progress = {'total': 0, 'completed': 0, 'is_running': False}
 
+# 抓取歷史數據
 def fetch_historical_data(stock_id, start_date, end_date):
     try:
         ticker = f"{stock_id}.TW"
@@ -43,6 +44,7 @@ def fetch_historical_data(stock_id, start_date, end_date):
         print(f"無法獲取股票 {stock_id} 的數據：{e}")
         return None
 
+# 計算技術指標
 def calculate_indicators(df):
     try:
         df['收盤價'] = pd.to_numeric(df['收盤價'], errors='coerce')
@@ -60,6 +62,7 @@ def calculate_indicators(df):
         print(f"計算技術指標失敗：{e}")
         return df
 
+# 檢測 MACD 背離
 def detect_macd_divergence(df, lookback_days=180, recent_days=30):
     if len(df) < lookback_days:
         print(f"股票數據少於 {lookback_days} 天，無法檢測背離")
@@ -76,6 +79,7 @@ def detect_macd_divergence(df, lookback_days=180, recent_days=30):
         print(f"檢測 MACD 背離失敗：{e}")
         return pd.DataFrame()
 
+# 繪製股票圖表（不顯示具體日期）
 def plot_stock_chart(df, stock_id, divergent_data, save_path):
     try:
         df_plot = df.copy()
@@ -87,18 +91,20 @@ def plot_stock_chart(df, stock_id, divergent_data, save_path):
             '收盤價': 'Close',
             '成交量': 'Volume'
         })
+        
         mc = mpf.make_marketcolors(up='red', down='green', edge='inherit', wick='inherit', volume='inherit')
         s = mpf.make_mpf_style(marketcolors=mc)
+        
         apds = [
             mpf.make_addplot(df_plot['MACD'], panel=1, color='blue', title='MACD'),
             mpf.make_addplot(df_plot['Signal'], panel=1, color='orange'),
             mpf.make_addplot(df_plot['Histogram'], panel=1, type='bar', color='dimgray')
         ]
+        
         if not divergent_data.empty:
-            divergent_dates = pd.to_datetime(divergent_data['日期'])
-            scatter_data = df_plot['Low'].reindex(divergent_dates).dropna()
-            if not scatter_data.empty:
-                apds.append(mpf.make_addplot(scatter_data, panel=0, type='scatter', markersize=100, marker='^', color='green', label='Bullish Divergence'))
+            # 只標示背離點，不依賴日期精確對應
+            scatter_data = df_plot['Low'].where(df_plot.index.isin(divergent_data['日期']), float('nan'))
+            apds.append(mpf.make_addplot(scatter_data, panel=0, type='scatter', markersize=100, marker='^', color='green', label='Bullish Divergence'))
         
         mpf.plot(
             df_plot,
@@ -122,6 +128,7 @@ def plot_stock_chart(df, stock_id, divergent_data, save_path):
     except Exception as e:
         print(f"繪製 {stock_id} 圖表失敗：{e}")
 
+# 背景分析股票
 def analyze_stocks_in_background():
     global progress
     csv_path = 'macd_divergent_stocks.csv'
@@ -244,5 +251,6 @@ def serve_chart(filename):
     return send_from_directory('stock_charts', filename)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
 #執行 python 台股MACD背離graph.py
