@@ -4,8 +4,8 @@ pandas_ta
 mplfinance
 tqdm
 datetime
-numpy
 matplotlib
 flask
 finMind
 flask_cors
+numpy==1.24.3
