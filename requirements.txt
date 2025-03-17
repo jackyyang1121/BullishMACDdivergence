@@ -1,0 +1,8 @@
+pandas
+yfinance
+pandas_ta
+mplfinance
+tqdm
+datetime
+numpy
+matplotlib
