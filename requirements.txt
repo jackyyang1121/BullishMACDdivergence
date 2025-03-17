@@ -6,3 +6,5 @@ tqdm
 datetime
 numpy
 matplotlib
+flask
+finMind

@@ -161,4 +161,4 @@ if __name__ == "__main__":
         print("\n未檢測到任何過去30天內有 MACD 背離的個股。")
 
 
-#執行 python 作品/台股MACD背離股票/台股MACD背離graph.py
+#執行 python 台股MACD背離獲取csv.py
