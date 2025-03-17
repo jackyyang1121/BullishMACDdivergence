@@ -182,6 +182,10 @@ def analyze_stocks_in_background():
         print("未檢測到背離股票")
     progress['is_running'] = False
 
+@app.route('/')
+def index():
+    return jsonify({"message": "歡迎使用台股 MACD 背離分析 API", "endpoints": ["/stocks", "/progress", "/stock/<stock_id>"]})
+
 @app.route('/stocks')
 def get_divergent_stocks():
     global progress
@@ -237,6 +241,6 @@ def serve_chart(filename):
     return send_from_directory('stock_charts', filename)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Heroku 動態端口
+    port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
 #執行 python 台股MACD背離graph.py
