@@ -237,6 +237,6 @@ def serve_chart(filename):
     return send_from_directory('stock_charts', filename)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
-
+    port = int(os.environ.get("PORT", 5000))  # Heroku 動態端口
+    app.run(host='0.0.0.0', port=port)
 #執行 python 台股MACD背離graph.py
