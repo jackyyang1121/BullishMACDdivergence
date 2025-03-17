@@ -8,3 +8,4 @@ numpy
 matplotlib
 flask
 finMind
+flask_cors

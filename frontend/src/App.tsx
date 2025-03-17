@@ -12,19 +12,42 @@ const App: React.FC = () => {
   const [selectedStockId, setSelectedStockId] = useState('');
   const [chartUrl, setChartUrl] = useState('');
   const [error, setError] = useState('');
+  const [progress, setProgress] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const backendUrl = 'https://crispy-acorn-4jvw9w69j7jph5j7q-5000.app.github.dev';
 
   useEffect(() => {
     const fetchStocks = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/stocks');
+        const response = await axios.get(`${backendUrl}/stocks`);
         setStocks(response.data.stocks);
         setError('');
-      } catch (error) {
-        console.error('Error fetching stocks:', error);
-        setError('無法獲取背離股票清單，請檢查後端服務');
+      } catch (error: any) {
+        console.error('Error fetching stocks:', error.message);
+        setError(`無法獲取背離股票清單：${error.message}`);
       }
     };
+
+    const fetchProgress = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/progress`);
+        setProgress(response.data.progress);
+        setIsRunning(response.data.is_running);
+      } catch (error: any) {
+        console.error('Error fetching progress:', error.message);
+      }
+    };
+
     fetchStocks();
+    fetchProgress();
+
+    // 每 2 秒輪詢一次
+    const interval = setInterval(() => {
+      fetchStocks();
+      fetchProgress();
+    }, 2000);
+
+    return () => clearInterval(interval); // 清理間隔計時器
   }, []);
 
   const fetchStockChart = async () => {
@@ -33,12 +56,12 @@ const App: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.get(`http://localhost:5000/stock/${selectedStockId}`);
-      setChartUrl(response.data.chartUrl);
+      const response = await axios.get(`${backendUrl}/stock/${selectedStockId}`);
+      setChartUrl(`${backendUrl}${response.data.chartUrl}`);
       setError('');
-    } catch (error) {
-      console.error('Error fetching stock chart:', error);
-      setError('無法獲取圖表，請確認股票代碼是否正確');
+    } catch (error: any) {
+      console.error('Error fetching stock chart:', error.message);
+      setError(`無法獲取圖表：${error.message}`);
     }
   };
 
@@ -46,6 +69,7 @@ const App: React.FC = () => {
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
       <h1>台股 MACD 背離分析</h1>
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      {isRunning && <p>分析進度：{progress}%</p>}
       <div style={{ marginBottom: '20px' }}>
         <h3>背離股票清單</h3>
         {stocks.length > 0 ? (
@@ -68,7 +92,7 @@ const App: React.FC = () => {
             </tbody>
           </table>
         ) : (
-          <p>正在載入股票清單...</p>
+          <p>{isRunning ? '正在分析股票，請稍候...' : '正在載入股票清單...'}</p>
         )}
         <input
           type="text"

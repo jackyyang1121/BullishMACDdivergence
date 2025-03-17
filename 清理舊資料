@@ -1,0 +1,2 @@
+rm macd_divergent_stocks.csv
+rm -rf stock_charts/
