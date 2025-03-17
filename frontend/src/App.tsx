@@ -14,7 +14,7 @@ const App: React.FC = () => {
   const [error, setError] = useState('');
   const [progress, setProgress] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const backendUrl = 'https://crispy-acorn-4jvw9w69j7jph5j7q-5000.app.github.dev';
+  const backendUrl = 'https://bullishmacddivergence-b4738fb587c2.herokuapp.com/';
 
   useEffect(() => {
     const fetchStocks = async () => {
