@@ -16,7 +16,7 @@ import gc
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://bullishmacddivergence-b4738fb587c2.herokuapp.com/"}})
 
 progress = {'total': 0, 'completed': 0, 'is_running': False}
 
