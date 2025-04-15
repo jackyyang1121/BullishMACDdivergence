@@ -1,0 +1,22 @@
+my-stock-project/
+├── backend/
+│   ├── app.py                 # 後端 Python+Flask 代碼
+│   ├── requirements.txt       # 後端依賴
+│   ├── Dockerfile             # 用於 Google Cloud Run 部署
+│   └── stock_charts/          # 儲存生成的圖表（運行時創建）
+├── frontend/
+│   ├── public/
+│   │   ├── index.html
+│   │   └── favicon.ico
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── HomePage.js
+│   │   │   ├── StockList.js
+│   │   │   └── StockDetail.js
+│   │   ├── App.js
+│   │   ├── index.js
+│   │   └── index.css
+│   ├── package.json           # 前端依賴
+│   └── firebase.json          # Firebase 部署配置文件
+├── .gitignore                 # 忽略文件
+└── README.md                  # 專案說明

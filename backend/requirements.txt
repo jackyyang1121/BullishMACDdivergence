@@ -1,0 +1,9 @@
+flask
+pandas
+yfinance
+pandas_ta
+mplfinance
+matplotlib
+finmind
+flask_cors
+tqdm
