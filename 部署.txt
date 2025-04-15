@@ -21,4 +21,3 @@ npm run build
 firebase init hosting  # 選擇前端目錄的 build 資料夾作為 public 目錄
 # 部署
 firebase deploy
-1
