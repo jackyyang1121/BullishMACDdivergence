@@ -18,7 +18,10 @@ x = np.nan
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["https://bullishmacddivergence-456915.web.app/"],
+                            "methods": ["GET", "POST", "OPTIONS"],
+                            "allow_headers": ["Content-Type", "Authorization"],
+                            "supports_credentials": True}})
 
 progress = {'total': 0, 'completed': 0, 'is_running': False}
 
