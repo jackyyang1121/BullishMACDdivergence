@@ -1,3 +1,0 @@
-cd frontend
-npx create-react-app .
-npm install @mui/material @emotion/react @emotion/styled axios react-router-dom
