@@ -1,0 +1,23 @@
+#安裝 Google Cloud SDK
+curl https://sdk.cloud.google.com | bash
+exec -l $SHELL
+gcloud init  # 登錄並選擇你的 Google Cloud 項目
+
+
+# 安裝 Firebase CLI
+npm install -g firebase-tools
+firebase login  # 登錄我的 Firebase 帳戶
+
+#部署cloud run
+直接去頁面部署
+
+#部署firebase
+# 安裝依賴（假設 package.json 已存在）
+npm install
+# 構建前端
+npm run build
+
+# 初始化 Firebase（若未設置 firebase.json）
+firebase init hosting  # 選擇前端目錄的 build 資料夾作為 public 目錄
+# 部署
+firebase deploy

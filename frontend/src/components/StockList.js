@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Typography, LinearProgress, Grid, Card, CardContent, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Box from '@mui/material/Box';
 
 const StockList = () => {
   const [stocks, setStocks] = useState([]);
