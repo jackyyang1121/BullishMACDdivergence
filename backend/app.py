@@ -2,7 +2,6 @@ from flask import Flask, jsonify, send_from_directory, redirect
 import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
-import pandas_ta as ta
 import warnings
 import mplfinance as mpf
 import matplotlib.pyplot as plt
@@ -12,7 +11,9 @@ from flask_cors import CORS
 from tqdm import tqdm
 import threading
 import gc
-from numpy import nan
+import numpy as np
+x = np.nan
+
 
 warnings.filterwarnings('ignore')
 
@@ -72,7 +73,7 @@ def calculate_indicators(df):
 def detect_macd_divergence(df, lookback_days=180, recent_days=30):
     if len(df) < lookback_days:
         print(f"股票數據少於 {lookback_days} 天，無法檢測背離")
-        return pd.DataFrame()
+        return pd.DataFrame(columns=df.columns).fillna(x)
     try:
         df['Price_Low'] = df['最低價'].rolling(window=lookback_days, min_periods=1).min()
         df['MACD_Low'] = df['Histogram'].rolling(window=lookback_days, min_periods=1).min()
@@ -108,7 +109,7 @@ def plot_stock_chart(df, stock_id, divergent_data, save_path):
         ]
         
         if not divergent_data.empty:
-            scatter_data = df_plot['Low'].where(df_plot.index.isin(divergent_data['日期']), float('nan'))
+            scatter_data = df_plot['Low'].where(df_plot.index.isin(divergent_data['日期']), x)
             apds.append(mpf.make_addplot(scatter_data, panel=0, type='scatter', markersize=100, marker='^', color='green', label='Bullish Divergence'))
         
         mpf.plot(
@@ -258,4 +259,4 @@ def serve_chart(filename):
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-#執行 python 台股MACD背離graph.py
+#執行 python app.py
