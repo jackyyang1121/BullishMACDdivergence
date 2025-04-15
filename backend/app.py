@@ -12,6 +12,7 @@ from flask_cors import CORS
 from tqdm import tqdm
 import threading
 import gc
+from numpy import nan
 
 warnings.filterwarnings('ignore')
 

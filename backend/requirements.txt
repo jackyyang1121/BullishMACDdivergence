@@ -7,3 +7,4 @@ matplotlib
 finmind
 flask_cors
 tqdm
+numpy
