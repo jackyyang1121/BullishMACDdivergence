@@ -14,9 +14,9 @@ function App() {
         </Toolbar>
       </AppBar>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/stocks" element={<StockList />} />
-        <Route path="/stock/:stockId" element={<StockDetail />} />
+        <Route exact path="/" element={<HomePage />} /> {/* 修正：使用 JSX */}
+        <Route path="/stocks" element={<StockList />} /> {/* 修正：使用 JSX */}
+        <Route path="/stock/:stockId" element={<StockDetail />} /> {/* 修正：使用 JSX */}
       </Routes>
     </Router>
   );

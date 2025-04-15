@@ -17,8 +17,3 @@ npm install
 # 構建前端
 npm run build
 
-# 初始化 Firebase（若未設置 firebase.json）
-firebase init hosting  # 選擇前端目錄的 build 資料夾作為 public 目錄
-# 部署
-firebase deploy
-1

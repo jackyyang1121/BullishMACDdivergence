@@ -9,9 +9,9 @@ const StockDetail = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`https://bullishmacddivergence-896205344044.asia-east1.run.app/stock/${stockId}`)
+    axios.get(`https://stock-backend-XXXXX-uc.a.run.app/stock/${stockId}`)
       .then(response => {
-        setChartUrl(`https://bullishmacddivergence-896205344044.asia-east1.run.app${response.data.chartUrl}`);
+        setChartUrl(`https://stock-backend-XXXXX-uc.a.run.app${response.data.chartUrl}`);
       })
       .catch(err => {
         setError('無法獲取股票數據');
