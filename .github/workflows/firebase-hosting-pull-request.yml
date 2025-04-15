@@ -17,5 +17,5 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BULLISHMACDDIVERGENCE_F41EB }}
-          projectId: bullishmacddivergence-f41eb
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BULLISHMACDDIVERGENCE_456915 }}
+          projectId: bullishmacddivergence-456915
