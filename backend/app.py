@@ -18,7 +18,7 @@ x = np.nan
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://bullishmacddivergence-456915.web.app/"],
+CORS(app, resources={r"/*": {"origins": ["https://bullishmacddivergence-456915.web.app"],
                             "methods": ["GET", "POST", "OPTIONS"],
                             "supports_credentials": True}})
 
