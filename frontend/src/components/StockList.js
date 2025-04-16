@@ -32,34 +32,40 @@ const StockList = () => {
       <Typography variant="h4" gutterBottom sx={{ mt: 4 }}>
         股票列表
       </Typography>
-      {isRunning && (
+      {isRunning ? (
         <Box sx={{ mb: 4 }}>
-          <Typography variant="body1">分析進度：{progress}%</Typography>
+          <Typography variant="body1">分析正在進行中，請稍候...</Typography>
           <LinearProgress variant="determinate" value={progress} />
+          <Typography variant="body2">進度：{progress}%</Typography>
         </Box>
+      ) : stocks.length === 0 ? (
+        <Typography variant="body1" sx={{ mt: 4 }}>
+          目前沒有可顯示的股票數據。可能正在分析中，請稍後再試。
+        </Typography>
+      ) : (
+        <Grid container spacing={3}>
+          {stocks.map(stock => (
+            <Grid item xs={12} sm={6} md={4} key={stock.stockId}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">{stock.stockId}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    背離日期: {stock.divergentDates.join(', ')}
+                  </Typography>
+                  <Button
+                    component={Link}
+                    to={`/stock/${stock.stockId}`}
+                    variant="outlined"
+                    sx={{ mt: 2 }}
+                  >
+                    查看詳情
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       )}
-      <Grid container spacing={3}>
-        {stocks.map(stock => (
-          <Grid item xs={12} sm={6} md={4} key={stock.stockId}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{stock.stockId}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  背離日期: {stock.divergentDates.join(', ')}
-                </Typography>
-                <Button
-                  component={Link}
-                  to={`/stock/${stock.stockId}`}
-                  variant="outlined"
-                  sx={{ mt: 2 }}
-                >
-                  查看詳情
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
     </Container>
   );
 };
