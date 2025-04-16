@@ -11,10 +11,10 @@ const StockList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const stocksResponse = await axios.get('https://stock-backend-XXXXX-uc.a.run.app/stocks');
+        const stocksResponse = await axios.get('bullishmacddivergence-456915.web.app/stocks');
         setStocks(stocksResponse.data.stocks);
 
-        const progressResponse = await axios.get('https://stock-backend-XXXXX-uc.a.run.app/progress');
+        const progressResponse = await axios.get('bullishmacddivergence-456915.web.app/progress');
         setProgress(progressResponse.data.progress);
         setIsRunning(progressResponse.data.is_running);
       } catch (error) {

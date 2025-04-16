@@ -6,7 +6,7 @@ const HomePage = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    axios.get('https://stock-backend-XXXXX-uc.a.run.app/')
+    axios.get('bullishmacddivergence-456915.web.app/')
       .then(response => setMessage(response.data.message))
       .catch(error => console.error('獲取歡迎消息失敗', error));
   }, []);
