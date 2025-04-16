@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, send_from_directory, redirect
 import pandas as pd
+import pandas_ta as ta
 import yfinance as yf
 from datetime import datetime, timedelta
 import warnings
@@ -152,7 +153,7 @@ def analyze_stocks_in_background():
                                 (stock_list['industry_category'] != 'ETF') & 
                                 (~stock_list['industry_category'].str.contains('基金|特別股', na=False)) & 
                                 (~stock_list['stock_id'].str.match(r'^01\d{2}T$'))]
-        stock_ids = stock_list['stock_id'].tolist()
+        stock_ids = stock_list['stock_id'].tolist()[:10]
         print(f"從 FinMind 獲取 {len(stock_ids)} 檔股票清單")
     except Exception as e:
         print(f"獲取股票清單失敗：{e}")
@@ -187,6 +188,9 @@ def analyze_stocks_in_background():
                             'stockId': stock_id,
                             'divergentDates': [date.strftime('%Y-%m-%d') for date in divergent_data['日期']]
                         })
+                        print(f"股票 {stock_id} 符合 MACD 背離且圖表生成成功")#
+                        if len(divergent_stocks) >= 10:  # 達到 10 檔後停止
+                            break#
             except Exception as e:
                 print(f"處理股票 {stock_id} 時出錯：{e}")
             progress['completed'] += 1
