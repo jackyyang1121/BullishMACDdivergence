@@ -188,9 +188,9 @@ def analyze_stocks_in_background():
                             'stockId': stock_id,
                             'divergentDates': [date.strftime('%Y-%m-%d') for date in divergent_data['日期']]
                         })
-                        print(f"股票 {stock_id} 符合 MACD 背離且圖表生成成功")#
+                        print(f"股票 {stock_id} 符合 MACD 背離且圖表生成成功")#之後刪掉
                         if len(divergent_stocks) >= 10:  # 達到 10 檔後停止
-                            break#
+                            break#之後刪掉
             except Exception as e:
                 print(f"處理股票 {stock_id} 時出錯：{e}")
             progress['completed'] += 1
