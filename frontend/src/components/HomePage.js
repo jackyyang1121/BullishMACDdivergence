@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box } from '@mui/material';
-import axios from 'axios';
+import React from 'react';
+import { Button, Typography, Container } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    axios.get('https://bullishmacddivergence-537561792277.asia-east1.run.app')
-      .then(response => setMessage(response.data.message))
-      .catch(error => console.error('獲取歡迎消息失敗', error));
-  }, []);
-
   return (
-    <Container maxWidth="md">
-      <Box sx={{ textAlign: 'center', mt: 8 }}>
-        <Typography variant="h4" gutterBottom>
-          {message || '歡迎使用台股 MACD 背離分析工具'}
-        </Typography>
-        <Typography variant="body1">
-          點擊「股票列表」查看最新的看漲背離股票。
-        </Typography>
-      </Box>
+    <Container maxWidth="lg" sx={{ textAlign: 'center', mt: 8 }}>
+      <Typography variant="h3" gutterBottom>
+        歡迎使用股票分析系統
+      </Typography>
+      <Typography variant="body1" sx={{ mb: 4 }}>
+        點擊下方按鈕查看最新的股票列表。
+      </Typography>
+      <Button
+        component={Link}
+        to="/stocks"
+        variant="contained"
+        color="primary"
+        size="large"
+      >
+        股票列表
+      </Button>
     </Container>
   );
 };
